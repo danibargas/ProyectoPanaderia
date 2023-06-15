@@ -1,0 +1,54 @@
+﻿@model List<ProyectoPanaderia.Models.Entidades.Tipos>
+
+<style>
+    main{
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<div class="justify-content-center">
+    <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th>IDTIPO</th>
+                    <th>DENOMINACION</th>
+                </tr>
+            </thead>
+            <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.IdTipo</td>
+                            <td>@item.Denominacion</td>
+                            <td>
+                                <button class="btn btn-danger" id="eliminar" data-idtipo="@item.IdTipo">Eliminar</button>
+                            </td>
+                        </tr>
+                    }
+            </tbody>
+        </table>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btn').on('click', function () {
+                var idtipo = $(this).data('idtipo');
+                console.log(idtipo);
+                $.ajax({
+                    url: '/admin/eliminartipo',
+                    type: 'POST',
+                    data: { idtipo: idtipo },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al eliminar el tipo con id: ' + idtipo);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

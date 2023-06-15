@@ -1,0 +1,120 @@
+﻿@model ProyectoPanaderia.Models.ViewModels.ProductoEdit
+
+
+<div class="row justify-content-center">
+    <div class="col-sm-8 mt-5">
+        <div class="card">
+            <div class="card-body justify-content-center">
+
+               
+                    
+                    @foreach(var i in Model.Productos)
+                    {
+                    <form action="/admin/edit/@i.IdProducto" method="post">
+                        <div style="text-align: center" class="justify-content-center">
+                            <h5 class="card-title">Modificación de producto: @i.Nombre</h5>
+                            @if (TempData["error"] != null)
+                            {
+                                <div class="alert alert-danger col-12">@TempData["error"]</div>
+                            }
+                            @if (TempData["ok"] != null)
+                            {
+                                <div class="alert alert-success col-12">@TempData["ok"]</div>
+                            }
+                        </div>
+                        <div class="mb-3 mt-lg-5 row justify-content-center">
+                            <div class="col-5">
+                                <span>Nombre</span>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" value="@i.Nombre" name="nombre" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row justify-content-center">
+                            <div class="col-5">
+                                <span>Descripción</span>
+                            </div>
+                            <div class="col-4">
+                                <textarea name="des" class="form-control">@i.Descripcion</textarea>
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-lg-5 row justify-content-center">
+                            <div class="col-5">
+                                <span>Precio</span>
+                            </div>
+                            <div class="col-4">
+                                <input type="text" name="precio" value="@i.Precio" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row justify-content-center">
+                            <div class="col-5">
+                                <span>Tipo</span>
+                            </div>
+                            <div class="col-4">
+                                <select name="tipo" class="tipo">
+                                    @if (Model.Tipos != null && Model.Tipos.Any())
+                                    {
+                                        foreach (var tipo in Model.Tipos)
+                                        {
+                                            if (tipo.IdTipo == i.idtipo)
+                                            {
+                                                <option value="@tipo.IdTipo" selected>@tipo.Denominacion</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@tipo.IdTipo">@tipo.Denominacion</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row justify-content-center">
+                            <div class="col-5">
+                                <span>Cantidad</span>
+                            </div>
+                            <div class="col-4">
+                                <input type="number" value="@i.Cantidad" name="cantidad" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row justify-content-center">
+                            <div class="col-5">
+                                <span>Contraseña</span>
+                            </div>
+                            <div class="col-4">
+                                @foreach (var alergeno in Model.Alergenos)
+                                {
+                                    if (i.Alergenos.Contains(alergeno.Descripcion))
+                                    {
+                                        <p><input type="checkbox" value="@alergeno.IdAlergeno" name="aler" checked />@alergeno.Descripcion</p>
+                                    }
+                                    else
+                                    {
+                                        <p><input type="checkbox" value="@alergeno.IdAlergeno" name="aler" />@alergeno.Descripcion</p>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-5 row justify-content-center">
+                            <input type="submit" value="Modificar" class="btn btn-primary col-3" />
+                        </div>
+                    </form>
+                    }
+                    
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.tipo').focusout('input', function () {
+                var ds = $(this).val();
+                console.log(ds);
+            })
+        })
+    </script>
+}

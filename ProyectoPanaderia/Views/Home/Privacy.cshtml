@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Lista de productos</h2>
+        </div>
+    </div>
+    <br />
+
+    <div id="contenido"></div>
+</div>
+
+@section Scripts
+    {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            $.ajax({
+                type: 'POST',
+                url: '/home/taba',
+                success: function (response) {
+                    console.log(response);
+                    for (let i = 0; i < response.length; i++) {
+                        var info = response[i];
+                        var hijo1 = $('<div>').text(info.idProducto);
+                        var hijo2 = $('<div>').text(info.name);
+                        var hijo3 = $('<div>').text(info.descripcion);
+                        var hijo4 = $('<div>').text(info.alergenos);
+                        var padre = $('<div>');
+                        padre.append(hijo1, hijo2, hijo3, hijo4);
+                        $('body').append(hijo1, hijo2, hijo3, hijo4);
+
+
+                    }
+                }
+            });
+        });
+    </script>
+}

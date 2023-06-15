@@ -1,0 +1,80 @@
+﻿@model List<ProyectoPanaderia.Models.Entidades.Productos>
+
+<style>
+    main {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<div class="justify-content-center">
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th>IDPRODUCTO</th>
+                <th>NOMBRE</th>
+                <th>DESCRIPCION</th>
+                <th>PRECIO</th>
+                <th>CANTIDAD</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IdProducto</td>
+                    <td>@item.Name</td>
+                    <td>@item.Descripcion</td>
+                    <td>@item.PrecioUnitario</td>
+                    <td>@item.Cantidad</td>
+                    <td>
+                        <button class="btn btn-danger eliminar" id="eliminar" data-idproducto="@item.IdProducto">Eliminar</button>
+                    </td>
+                    <td>
+                       <a class="btn btn-primary" href="/admin/editproducto/@item.IdProducto">Editar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.eliminar').on('click', function () {
+                var idproducto = $(this).data('idproducto');
+                $.ajax({
+                    url: '/admin/eliminarproducto',
+                    type: 'POST',
+                    data: { idproducto: idproducto },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al eliminar el tipo con id: ' + idtipo);
+                        }
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('#editar').on('click', function () {
+                var idproducto = $(this).data('idproducto');
+                console.log(idproducto);
+                $.ajax({
+                    url: '/admin/editproducto',
+                    type: 'GET',
+                    data: { idproducto: idproducto },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al eliminar el tipo con id: ' + idtipo);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

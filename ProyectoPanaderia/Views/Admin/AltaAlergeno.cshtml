@@ -1,0 +1,45 @@
+﻿
+<style>
+    main {
+        justify-content: center;
+        display: flex;
+    }
+</style>
+
+
+
+<div class="card mb-3" style="width: 40em">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <div class="card-body" style="text-align: center; align-content: center">
+                <h5 class="card-title">Añadir Alergeno</h5>
+                <div style="display: flex; justify-content: center">
+                    @if (TempData["error"] != null)
+                    {
+                        <div class="col-auto alert alert-danger">@TempData["error"]</div>
+                    }
+                    @if (TempData["ok"] != null)
+                    {
+                        <div class="col-auto alert alert-success">@TempData["ok"]</div>
+                    }
+                </div>
+                <form action="/admin/altaalergeno" method="post">
+                    <div class="mt-5 mb-5 row justify-content-center">
+                        <div class="col-3">
+                            Nombre
+                        </div>
+                        <div class="col-5">
+                            <input type="text" name="nombre" class="form-control" />
+                        </div>
+                        <div class="col-3">
+                            <input type="submit" value="Añadir" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+                <div style="display: flex; justify-content: center">
+                    <a class="btn btn-primary" href="/admin/listadoalergenos">Ver lista</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

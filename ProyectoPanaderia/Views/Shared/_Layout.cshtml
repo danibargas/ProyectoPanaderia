@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ProyectoPanaderia</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ProyectoPanaderia.styles.css" asp-append-version="true" />
+</head>
+<style type="text/css">
+    .menu > li {
+        display: inline-block;
+        position: relative;
+    }
+
+        .menu > li > a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #000;
+        }
+    .menu li:hover{
+        background-color: orange;
+    }
+    .submenu {
+        display: none;
+        position: absolute;
+        background-color: #111111;
+        top: 100%;
+        left: 0;
+        width: 10em;
+        padding: 0;
+        z-index: 2;
+    }
+
+    .submenu a{
+        text-decoration: none;
+        color: white;
+    }
+
+        .submenu > li {
+            display: block;
+        }
+
+    .menu > li:hover .submenu {
+        display: block;
+    }
+    .submenu .li{
+        text-align: justify;
+    }
+
+    .submenu li:hover {
+        background-color:orange;
+        color: black;
+    }
+
+    .card {
+        z-index: 1;
+        position: relative;
+    }
+
+</style>
+<body>
+    <header>
+        <div id="cabecero" style="height: 10em; display: flex; justify-content: center; background-color: #111111">
+            <img src="/img/loguito.jpg" width="200" />
+        </div>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#111111; text-align: center">
+            <div class="container-fluid">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between menu">
+                    <ul class="navbar-nav flex-grow-1 menu justify-content-center">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#">Productos</a>
+                            <ul class="submenu" id="tipos"></ul>
+                        </li>
+                        @if(User.IsInRole("Admin") || User.IsInRole("Moderador")){
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Listados</a>
+                                <ul class="submenu">
+                                    @if (User.IsInRole("Admin") && User.Identity.IsAuthenticated)
+                                    {
+                                        <li><a class="nav-link text-white" href="/admin/listadousuarios/@User.Identity.Name">Listado usuarios</a></li>
+                                    }
+                                    <li><a class="nav-link text-white" href="/admin/listatipos">Listado Tipos</a></li>
+                                    <li><a class="nav-link text-white" href="/admin/listadoalergenos">Listado Alergenos</a></li>
+                                    <li><a class="nav-link text-white" href="/admin/listadoproductos">Listado Productos</a></li>
+                                    <li><a class="nav-link text-white" href="/admin/listadopedidos">Listado Pedidos</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white">Altas</a>
+                                <ul class="submenu">
+                                    <li><a class="nav-link text-white" href="/admin/altatipo">Alta tipo</a></li>
+                                    <li><a class="nav-link text-white" href="/admin/altaalergeno">Alta alergeno</a></li>
+                                    <li><a class="nav-link text-white" href="/admin/altaproducto">Alta producto</a></li>
+                                </ul>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/home/conocenos">Conócenos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/home/tiendas">Tiendas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/home/contacto">Contacto</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">@User.Identity.Name</a>
+                                <ul class="submenu">
+                                    <li><a class="nav-link text-white" href="/socio/modificarse/@User.Identity.Name">Modificar datos</a></li>
+                                    <li><a class="nav-link text-white" href="/home/logout">Cerrar sesión</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="/socio/pedidossocio/@User.Identity.Name">Mis pedidos</a>
+                            </li>
+                            <li class="nav-item align-items-end">
+                                <a class="nav-link text-white" href="/socio/carrito/@User.Identity.Name"><img src="~/img/transparent-buy-icon-airport-terminal-icon-shopping-cart-icon-60250fbc507486.5973827616130415963296.png" width="20px" height="20px" /></a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="/home/login/">Iniciar sesión</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2023 - Proyecto Pedidos Panaderia - Daniel Martín Gutiérrez
+        </div>
+    </footer>
+
+
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(document).ready(function(){
+            $(window).on('load', function(){
+                $.ajax({
+                    url: '/home/cargartipos',
+                    success: function(response){
+                        console.log(response)
+                        console.log(response[0].idTipo)
+                        for(let i=0; i<response.length; i++){
+                            var tipo=response[i];
+                            var li=$('<li>');
+                            li.append($('<a>', {class: "hola", href:"/socio/ProductosPorTipo/"+tipo.idTipo, text: tipo.denominacion}));
+                            $('#tipos').append(li);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

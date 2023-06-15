@@ -1,0 +1,114 @@
+﻿@model ProyectoPanaderia.Models.ViewModels.TablaUsuarios
+
+@{
+    ViewData["Title"] = "Lista de Socios";
+}
+
+<h1>Lista de Socios</h1>
+
+<table class="table table-borderless">
+    <thead>
+        <tr>
+            <th>Id Socio</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Grupo</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var socio in Model.Socios)
+        {
+            <tr>
+                <td>@socio.IdSocio</td>
+                <td>@socio.NickName</td>
+                <td>@socio.Apellidos</td>
+                <td>
+                    <select class="grupo-select" data-socioid="@socio.IdSocio">
+                        <option value="">Otras opciones</option>
+                        @foreach (var grupo in Model.Grupos)
+                        {
+                            if (grupo.Nombre == socio.Grupo)
+                            {
+                                <option value="@grupo.IdGrupo" selected>@grupo.Nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@grupo.IdGrupo">@grupo.Nombre</option>
+                            }
+                        }
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-danger" id="eliminar" data-socioid="@socio.IdSocio">Eliminar</button>
+                </td>
+             </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+
+        const connection = new signalR.HubConnectionBuilder().withUrl("/datosHub").build();
+
+        // Suscribirse al evento "GrupoSocioActualizado"
+        connection.on("GrupoSocioActualizado", (socioId, nuevoGrupoId) => {
+            // Aquí puedes actualizar la interfaz de usuario o realizar cualquier acción necesaria
+            console.log(`Se ha actualizado el grupo del socio ${socioId} a ${nuevoGrupoId}`);
+        });
+
+        // Iniciar la conexión con el Hub
+        connection.start().then(() => {
+            console.log("Conexión establecida con el Hub");
+        }).catch((error) => {
+            console.error("Error al iniciar la conexión con el Hub:", error);
+        });
+
+
+
+        $(document).ready(function () {
+            $('.grupo-select').change(function () {
+                var socioId = $(this).data('socioid');
+                var nuevoGrupoId = $(this).val();
+
+                $.ajax({
+                    url: '/admin/ActualizarGrupoSocio',
+                    type: 'POST',
+                    data: { socioId: socioId, nuevoGrupoId: nuevoGrupoId },
+                    success: function (response) {
+                        if (response.success) {
+                            // Actualizar la tabla de usuarios en el cliente
+                            var row = $(this).closest('tr');
+                            row.find('td:nth-child(4)').text(nuevoGrupoId);
+                            location.reload();
+                        } else {
+                            alert('Error al actualizar el grupo del socio: ' + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error al realizar la solicitud: ' + error);
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function(){
+            $('#eliminar').on('click', function(){
+                var socioId=$(this).data('socioid');
+
+                $.ajax({
+                    url: '/admin/eliminarsocio',
+                    type: 'POST',
+                    data: {socioId: socioId},
+                    success: function(response){
+                        if(response.success){
+                            location.reload();
+                        }else{
+                            alert('Error al eliminar el socio con id: '+socioId);
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+}

@@ -1,0 +1,56 @@
+﻿@model List<ProyectoPanaderia.Models.Entidades.Pedido>
+
+
+<style>
+    main{
+        display: flex;
+        justify-content: center;
+    }
+</style>
+<div class="cards">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-3" style="width: 50em">
+            <div class="row mt-2 mb-2" style="text-align: center">
+                <div class="col-md-2 justify-content-center">
+                    Pedido nº @item.IdPedido
+                </div>
+                <div class="col-md-4">
+                    Fecha: @DateOnly.FromDateTime(item.FechaRealizacion.Date)
+                </div>
+                <div class="col-md-2">
+                    Total: @item.Total€
+                </div>
+                <div class="col-md-4 d-flex justify-content-center">
+                    <a class="btn btn-primary" href="/socio/detallespedido?idpedido=@item.IdPedido">Ver detalles</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section Scripts{
+    <script>
+        //$(document).ready(function () {
+        //    $('.btn').on('click', function () {
+        //        var idpedido = $(this).data('idpedido');
+        //        $.ajax({
+        //            url: '/socio/detallespedido',
+        //            type: 'POST',
+        //            data: {
+        //                idpedido: idpedido
+        //            },
+        //            success: function (response) {
+        //                if (response.success) {
+        //                    console.log(response.message);
+        //                    //location.reload();
+        //                } else {
+        //                    alert('Error al eliminar el tipo con id: ' + idtipo);
+        //                }
+        //            }
+        //        });
+        //    });
+        //});
+    </script>
+}

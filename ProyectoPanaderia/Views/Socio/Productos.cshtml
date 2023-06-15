@@ -1,0 +1,97 @@
+﻿@model List<ProyectoPanaderia.Models.ViewModels.ProductoViewModel>
+
+
+    <style>
+        .btn{
+            height: 40px;
+            margin-top: 4em;
+        }
+        .img-fluid{
+            margin-top: 20px;
+            height: 10em;
+            width: 7em;
+        }
+        .imagen{
+            display: flex;
+            justify-content: center;
+        }
+
+    </style>
+
+@foreach(var item in Model){
+    <div class="card mb-3" style="max-width: 100%;">
+        <div class="row no-gutters">
+            <div class="col-md-4 imagen">
+                <img class="img-fluid" src="~/img/productos/@(item.Nombre).jpeg">
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Nombre</h5>
+                    <p class="card-text">Precio: @item.Precio€</p>
+                    <p class="card-text">Alergenos: @item.Alergenos</p>
+                    @{
+                        if (item.Cantidad > 6)
+                        {
+                            <p class="card-text" style="color: forestgreen">En stock</p>
+                        }else if (item.Cantidad > 0 && item.Cantidad<=5)
+                        {
+                            <p class="card-text" style="color: darkorange">Quedan (@item.Cantidad) en stock </p>
+                        }
+                        else{
+                            <p class="card-text" style="color: red">Sin stock</p>
+                        }
+                    }
+                    <a href="#" onclick="mostrarElementoB(@item.IdProducto, this)" style="color: black">Mostrar más</a>
+                    <p id="descripcion-@item.IdProducto" class="descripcion" style="display: none">@item.Descripcion</p>
+                    
+                </div>
+            </div>
+            <div class="col-md-2 d-flex justify-content-center hola">
+                @if(item.Cantidad>0){
+                    <button class="btn btn-danger" data-socio="@User.Identity.Name" data-idproducto="@item.IdProducto" data-precio="@item.Precio">Comprar</button>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btn').on('click', function () {
+                var idproducto = $(this).data('idproducto');
+                var precio = $(this).data('precio');
+                var socio = $(this).data('socio');
+                $.ajax({
+                    url: '/socio/anadirproducto',
+                    type: 'POST',
+                    data: {
+                        precio: precio,
+                        idproducto: idproducto,
+                        socio: socio
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log(response.message);
+                            //location.reload();
+                        } else {
+                            alert('Error al añadirlo al carrito');
+                        }
+                    }
+                });
+            });
+        });
+        function mostrarElementoB(elementoId, elementoA) {
+            var elementoB = document.getElementById("descripcion-" + elementoId);
+            if (elementoB.style.display === "none") {
+                elementoB.style.display = "block";
+                elementoA.innerHTML = "Mostrar menos";
+            } else {
+                elementoB.style.display = "none";
+                elementoA.innerHTML = "Mostrar más";
+            }
+        }
+
+    </script>
+}

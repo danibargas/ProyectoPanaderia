@@ -1,0 +1,27 @@
+﻿@model List<ProyectoPanaderia.Models.ViewModels.DetallePedidos>
+
+<div class="card d-flex justify-content-center">
+    <table class="table table-borderless m-5">
+        <thead>
+            <tr>
+                <th>Cantidad</th>
+                <th>Producto</th>
+                <th>Total producto</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.cantidad</td>
+                    <td>@item.Producto</td>
+                    <td>@item.TotalProducto</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div style="text-align: center" class="mb-3">
+        <a href="/admin/listadopedidos" class="btn btn-primary">Volver</a>
+    </div>
+    
+</div>

@@ -1,0 +1,138 @@
+﻿@model ProyectoPanaderia.Models.ViewModels.Detalles
+
+<style>
+    .row {
+        align-items: center;
+        margin-left: 3em;
+    }
+
+    .card {
+        border: 1px solid black;
+    }
+    .carrito{
+        text-align: center;
+    }
+</style>
+
+<h3>Carrito de @User.Identity.Name</h3>
+@if (Model.Detalle.Count != 0)
+{
+    <form id="carritoForm" method="post" action="/socio/confirmarpedido">
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th>Cantidad</th>
+                    <th>Producto</th>
+                    <th>Precio unidad</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.Detalle)
+                {
+                    <tr>
+                        <td width="1">
+                            <input style="width: 3em" type="number" value="@f.Cantidad" name="cantidad" data-idpedido="@f.IdPedido" id="cantidad-@f.id" data-id="@f.id" />
+                        </td>
+                        @foreach(var p in Model.Productos)
+                        {
+                            if (p.IdProducto == f.IdProducto)
+                            {
+                                <td>@p.Name</td>
+                            }
+                        }
+                        <td>@f.PrecioUnitario</td>
+                        <td>@f.Total</td>
+                        <td>
+                            <button type="button" class="btn btn-danger eliminar" data-id="@f.id" data-cantidad="@f.Cantidad" data-idpedido="@f.IdPedido" id="eliminar">Eliminar</button>
+                        </td>
+                        <input type="hidden" name="idproducto" value="@f.IdProducto" />
+                        <input type="hidden" name="idpedido" value="@f.IdPedido" />
+                        <input type="hidden" name="nick" value="@User.Identity.Name" />
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Confirmar pedido</button>
+    </form>
+}
+else
+{
+    <div class="carrito">
+        <br />
+        <h2>El carrito esta vacio</h2>
+    </div>
+    
+}
+
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('input[id^="cantidad-"]').on('change', function () {
+                var id = $(this).data('id');
+                var idpedido = $(this).data('idpedido');
+                var cantidad = $(this).val();
+                $.ajax({
+                    url: '/socio/cambiarcantidad',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        idpedido: idpedido,
+                        cantidad: cantidad
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al cambiar la cantidad del detalle con id: ' + id);
+                        }
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('.eliminar').on('click', function () {
+                event.stopPropagation();
+                var id = $(this).data('id');
+                var cantidad = $(this).data('cantidad');
+                var idpedido = $(this).data('idpedido');
+                $.ajax({
+                    url: '/socio/eliminarproducto',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        cantidad: cantidad,
+                        idpedido: idpedido
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al cambiar la cantidad del detalle con id: ' + id);
+                        }
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('#carritoForm').submit(function (event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

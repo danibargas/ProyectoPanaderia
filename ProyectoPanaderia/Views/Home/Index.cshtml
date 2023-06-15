@@ -1,0 +1,41 @@
+﻿
+
+@{
+    ViewData["Title"] = "Home Page";
+ 
+}
+
+<style>
+    .primer img{
+        height: 20em;
+    }
+    .seg{
+        display: flex;
+        justify-content: center;
+    }
+    .parrafo{
+        margin: 20px;
+    }
+</style>
+
+
+<div class="primer bg-dark" style="color: white; text-align: center">
+    <br />
+    <h1>Del horno a vuestras casas</h1>
+    <br />
+    <img src="~/img/fondo2.jpg" width="100%" />
+</div>
+<div class="seg mt-5">
+    <div class="izq" style="text-align: center">
+        <br />
+        <h5>Sabor natural</h5>
+        <br />
+        <p class="parrafo">Somos una empresa familiar que aunque no llevemos mucho, la calidad de nuestro pan artesanal es excelente.</p>
+        <p class="parrafo">Si quieres saber mas acerca de nosotros pincha en el siguiente botón.</p>
+        <br />
+        <a href="/home/conocenos" class="btn btn-success">Conócenos</a>
+    </div>
+    <div class="der">
+        <img src="~/img/fondo.jpg" />
+    </div>
+</div>

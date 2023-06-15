@@ -1,0 +1,99 @@
+﻿@model List<ProyectoPanaderia.Models.ViewModels.PedidoViewModel>
+
+<style>
+    main {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<div class="justify-content-center">
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th>IDPEDDIDO</th>
+                <th>NICKNAME</th>
+                <th>FECHAREALIZADO</th>
+                <th>ESTADO</th>
+                <th>COBRADO</th>
+                <th>TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IdPedido</td>
+                    <td>@item.NickName</td>
+                    <td>@item.Fecha</td>
+                    <td>@item.Estado</td>
+                    <td>
+                        <select class="form-select" id="cobrado" data-idpedido="@item.IdPedido">
+                            @if (item.Cobrado == "No")
+                            {
+                                <option value="No" selected>No</option>
+                                <option value="Si">Si</option>
+                            }
+                            else
+                            {
+                                <option value="No">No</option>
+                                <option value="Si" selected>Si</option>
+                            }
+                        </select>
+                    </td>
+                    <td>@item.Precio</td>
+                    <td>
+                        <button class="btn btn-danger eliminar" id="eliminar" data-idpedido="@item.IdPedido">Eliminar</button>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" href="/admin/detalles?idpedido=@item.IdPedido">Ver Detalles</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#cobrado').on('click', function () {
+                var idpedido = $(this).data('idpedido');
+                var cobrado = $(this).val();
+                $.ajax({
+                    url: '/admin/cambiarcobrado',
+                    type: 'POST',
+                    data: {
+                        idpedido: idpedido,
+                        cobrado: cobrado
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log(response.message);
+                            //location.reload();
+                        } else {
+                            alert('Error al eliminar el tipo con id: ' + idtipo);
+                        }
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('.eliminar').on('click', function () {
+                var idpedido = $(this).data('idpedido');
+                $.ajax({
+                    url: '/admin/eliminarpedido',
+                    type: 'POST',
+                    data: { idpedido: idpedido },
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Error al eliminar el tipo con id: ' + idtipo);
+                        }
+                    }
+                });
+            });
+        });
+    </script>}
