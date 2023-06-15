@@ -473,7 +473,7 @@ namespace ProyectoPanaderia.Controllers
             else 
             {
 
-                // ...
+                
 
                 var adas = _con.AlergenosPorProductos.Where(w => w.IdProducto == idproducto);
                 _con.AlergenosPorProductos.RemoveRange(adas);
