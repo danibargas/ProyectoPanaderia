@@ -1,15 +1,12 @@
 ﻿@model ProyectoPanaderia.Models.ViewModels.ProductoEdit
 
-
 <div class="row justify-content-center">
     <div class="col-sm-8 mt-5">
         <div class="card">
             <div class="card-body justify-content-center">
 
-               
-                    
-                    @foreach(var i in Model.Productos)
-                    {
+                @foreach (var i in Model.Productos)
+                {
                     <form action="/admin/edit/@i.IdProducto" method="post">
                         <div style="text-align: center" class="justify-content-center">
                             <h5 class="card-title">Modificación de producto: @i.Nombre</h5>
@@ -81,18 +78,19 @@
                         </div>
                         <div class="mb-3 row justify-content-center">
                             <div class="col-5">
-                                <span>Contraseña</span>
+                                <span>Alérgenos</span>
                             </div>
                             <div class="col-4">
                                 @foreach (var alergeno in Model.Alergenos)
+
                                 {
                                     if (i.Alergenos.Contains(alergeno.Descripcion))
                                     {
-                                        <p><input type="checkbox" value="@alergeno.IdAlergeno" name="aler" checked />@alergeno.Descripcion</p>
+                                        <p><input type="checkbox" value="@alergeno.IdAlergeno" name="alerg" checked />@alergeno.Descripcion</p>
                                     }
                                     else
                                     {
-                                        <p><input type="checkbox" value="@alergeno.IdAlergeno" name="aler" />@alergeno.Descripcion</p>
+                                        <p><input type="checkbox" value="@alergeno.IdAlergeno" name="alerg" />@alergeno.Descripcion</p>
                                     }
                                 }
                             </div>
@@ -101,8 +99,8 @@
                             <input type="submit" value="Modificar" class="btn btn-primary col-3" />
                         </div>
                     </form>
-                    }
-                    
+                }
+
             </div>
         </div>
     </div>

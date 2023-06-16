@@ -462,40 +462,38 @@ namespace ProyectoPanaderia.Controllers
             var productoTipo = _con.ProductosPorTipos.FirstOrDefault(pt => pt.IdProducto == idproducto);
             productoTipo.IdTipo = tipo;
 
-                
-
-            if (!alerg.Any() && alerg == null)
+            if (alerg == null || !alerg.Any())
             {
-                TempData["error"] = "Selecciona algun alergeno";
+                TempData["error"] = "Selecciona algún alergeno";
                 return Json(alerg);
-
             }
-            else 
+            else
             {
+                var existingAlergenos = _con.AlergenosPorProductos.Where(ap => ap.IdProducto == idproducto).Select(ap => ap.IdAlergeno).ToList();
+                var alergenosToRemove = existingAlergenos.Except(alerg).ToList();
+                var alergenosToAdd = alerg.Except(existingAlergenos).ToList();
 
-                
+                // Eliminar los alergenos que no están en el array 'alerg'
+                var alergenosPorProductosToRemove = _con.AlergenosPorProductos.Where(ap => ap.IdProducto == idproducto && alergenosToRemove.Contains(ap.IdAlergeno));
+                _con.AlergenosPorProductos.RemoveRange(alergenosPorProductosToRemove);
+                await _con.SaveChangesAsync();
 
-                var adas = _con.AlergenosPorProductos.Where(w => w.IdProducto == idproducto);
-                _con.AlergenosPorProductos.RemoveRange(adas);
-                _con.SaveChanges();
-
-                var ultimo = _con.AlergenosPorProductos.Select(a => a.Id).DefaultIfEmpty(0).Max();
-                foreach (var a in alerg)
+                // Añadir los nuevos alergenos del array 'alerg' que no están en la base de datos
+                var ultimo = _con.AlergenosPorProductos.Select(a => a.Id).Max();
+                foreach (var a in alergenosToAdd)
                 {
                     ultimo++;
-
-                 
-                        AlergenosPorProducto ap = new AlergenosPorProducto
-                        {
-                            Id = ultimo,
-                            IdProducto = idproducto,
-                            IdAlergeno = a
-                        };
-                        _con.AlergenosPorProductos.Add(ap);
+                    AlergenosPorProducto ap = new AlergenosPorProducto
+                    {
+                        Id = ultimo,
+                        IdProducto = idproducto,
+                        IdAlergeno = a
+                    };
+                    _con.AlergenosPorProductos.Add(ap);
                 }
-                _con.SaveChanges();
-                return View("ListadoProductos", res);
+                await _con.SaveChangesAsync();
 
+                return View("ListadoProductos", res);
             }
         }
         //----------------------------------------------------------------
