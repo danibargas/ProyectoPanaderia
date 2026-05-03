@@ -39,7 +39,7 @@ cd ProyectoPanaderia
 3. Configurar la base de datos:
 
   Crear una base de datos en SQL
-  Importar el script incluido (si aplica)
+  Importar el script incluid
   Configurar la cadena de conexión en el proyecto
 
 4. Ejecutar el proyecto desde el IDE (Visual Studio recomendado)
